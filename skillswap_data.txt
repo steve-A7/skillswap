@@ -1,0 +1,145 @@
+USE skillswap_db;
+
+--  USERs (6 rows)
+
+INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `role`, `is_active`, `created_at`) VALUES
+(1, 'Irshad_Kamil', 'KamIrsh@gmail.com', '$2y$10$CjsEnZcSMCchRUApHez3YOzGm6TQixDwZFMdbvED2crYUYbN1F2ma', 'mentor', 1, '2026-01-20 04:22:46'),
+(2, 'eren_yeager', 'erenyg22@gmail.com', '$2y$10$RNTC3kXMc95OuhqrKv7PteqivTeiikz0n22oV6PCnTziyfk9rpMwi', 'learner', 1, '2026-01-21 08:35:59'),
+(3, 'kishore_Biswas21', 'youcute11@gmail.com', '123456789', 'learner', 1, '2026-01-21 19:07:57'),
+(4, 'Abdullah_Kafe22', 'kingkafe@gmail.com', '123456789', 'learner', 1, '2026-01-21 19:07:57'),
+(5, 'YoussefRahman1', 'rahyou12@gmail.com', '123456789', 'mentor', 1, '2026-01-21 19:07:57'),
+(6, 'Rayeba_Kabir14', 'krb234@gmail.com', '123456789', 'mentor', 1, '2026-01-21 19:07:57');
+
+-- LEARNER_PROFILES (3 rows)
+
+INSERT INTO `learner_profiles` (`learner_id`, `user_id`, `sex`, `age`, `educational_qualification`, `preferred_way_to_learn`, `profile_picture_path`, `preferred_payment_method`, `paypal_email`, `bkash_number`, `nagad_number`, `card_last4`, `bio`, `created_at`, `updated_at`) VALUES
+(1, 2, 'male', 21, 'SSC, HSC', 'both', 'public/assets/uploads/eren_yeager.png', 'bkash', NULL, '01876543221', NULL, NULL, 'Interested in learning new stuff.', '2026-01-21 08:35:59', '2026-01-21 08:35:59'),
+(2, 3, 'male', 22, 'SSC, HSC, BSc in CSE', 'both', 'public/assets/uploads/kishore_Biswas21.png', 'bkash', NULL, '01734123981', NULL, NULL, 'Eager to learn and improve skills.', '2026-01-21 19:07:58', '2026-01-21 19:07:58'),
+(3, 4, 'male', 21, 'SSC, HSC, BSc in CSE', 'video', 'public/assets/uploads/Abdullah_Kafe22.png', 'credit_card', NULL, NULL, NULL, '4321', 'Learning enthusiast and active participant.', '2026-01-21 19:07:58', '2026-01-21 19:07:58');
+
+-- MENTOR_PROFILES (3 rows)
+
+INSERT INTO `mentor_profiles` (`mentor_id`, `user_id`, `sex`, `age`, `qualification_experience`, `language_proficiency`, `available_for_price_range`, `payment_method`, `paypal_email`, `bkash_number`, `nagad_number`, `card_last4`, `preferred_mentoring`, `profile_picture_path`, `bio`, `created_at`, `updated_at`) VALUES
+(1, 1, 'male', 46, 'SSC, HSC, Bsc CSE, Msc EEE | Senior Developer for 4 Years, Git Contributor for Linux Distro Arch', 'English, Bengali', '3000-4999', 'credit_card', NULL, NULL, NULL, '1277', 'both', 'public/assets/uploads/Irshad_Kamil.png', 'I am the person for your engineering needs.', '2026-01-20 04:22:46', '2026-01-21 06:31:34'),
+(2, 5, 'male', 28, 'SSC, HSC, Bsc CSE, Msc CSE | Full-stack developer with 5+ years experience.', 'English, Bengali', '2000-2999', 'bkash', NULL, '01776511211', NULL, NULL, 'both', 'public/assets/uploads/YoussefRahman1.png', 'I teach with real-world projects.', '2026-01-21 19:07:58', '2026-01-21 19:41:01'),
+(3, 6, 'female', 30, 'SSC, HSC, Bsc Ba English, MBA | UI/UX designer and language coach.', 'English, Bengali', '5000+', 'paypal', 'krb234@gmail.com', NULL, NULL, NULL, 'both', 'public/assets/uploads/Rayeba_Kabir14.png', 'Friendly mentor with practical guidance.', '2026-01-21 19:07:58', '2026-01-21 19:41:01');
+
+-- LEARNER_INTERESTS (14 rows)
+
+INSERT INTO `learner_interests` (`learner_id`, `category_id`, `created_at`) VALUES
+(1, 1, '2026-01-21 19:23:43'),
+(1, 2, '2026-01-21 19:23:43'),
+(1, 5, '2026-01-21 19:23:43'),
+(1, 7, '2026-01-21 19:23:43'),
+(2, 6, '2026-01-21 19:07:58'),
+(2, 7, '2026-01-21 19:07:58'),
+(2, 8, '2026-01-21 19:07:58'),
+(2, 9, '2026-01-21 19:07:58'),
+(2, 10, '2026-01-21 19:07:58'),
+(3, 6, '2026-01-21 19:07:58'),
+(3, 7, '2026-01-21 19:07:58'),
+(3, 8, '2026-01-21 19:07:58'),
+(3, 9, '2026-01-21 19:07:58'),
+(3, 10, '2026-01-21 19:07:58');
+
+-- MENTOR_CATEGORIES (14 rows)
+
+INSERT INTO `mentor_categories` (`mentor_id`, `category_id`, `created_at`) VALUES
+(1, 1, '2026-01-20 14:31:42'),
+(1, 3, '2026-01-20 14:31:42'),
+(1, 4, '2026-01-20 14:31:42'),
+(1, 5, '2026-01-20 14:31:42'),
+(2, 6, '2026-01-21 19:07:58'),
+(2, 7, '2026-01-21 19:07:58'),
+(2, 8, '2026-01-21 19:07:58'),
+(2, 9, '2026-01-21 19:07:58'),
+(2, 10, '2026-01-21 19:07:58'),
+(3, 6, '2026-01-21 19:07:58'),
+(3, 7, '2026-01-21 19:07:58'),
+(3, 8, '2026-01-21 19:07:58'),
+(3, 9, '2026-01-21 19:07:58'),
+(3, 10, '2026-01-21 19:07:58');
+
+-- MENTOR_SKILL_OFFERINGS (8 rows)
+
+INSERT INTO `mentor_skill_offerings` (`offering_id`, `mentor_id`, `category_id`, `skill_code`, `skill_title`, `difficulty`, `prerequisites`, `current_status`, `price`, `description`, `offered_for`, `created_at`, `updated_at`, `offering_picture_path`) VALUES
+(1, 1, 1, 'ML101', 'Machine Learning Basics', 'beginner', 'None', 'completed', 4200.00, 'Essential basics for Machine Learning understanding.', 45, '2026-01-21 04:02:02', '2026-01-21 16:14:40', 'public/assets/uploads/Machine_Learning_Basics.png'),
+(2, 1, 5, 'IL101', 'Induction Motor Basics', 'beginner', 'None', 'available', 3999.00, 'Learn about induction motors basics', 14, '2026-01-21 16:28:49', '2026-01-21 16:28:49', 'public/assets/uploads/Induction_Motor_Basics.jpg'),
+(3, 2, 6, 'WEB101', 'PHP + MySQL Web App Bootcamp', 'beginner', 'Basic programming knowledge is recommended.', 'completed', 1500.00, 'Build dynamic web apps with PHP, MySQL, MVC patterns.', 45, '2026-01-21 19:07:58', '2026-01-21 21:58:29', 'public/assets/uploads/php_mysql.jpg'),
+(4, 2, 8, 'DS201', 'Practical Data Science with Python', 'intermediate', 'Python basics + numpy/pandas.', 'available', 2500.00, 'Learn data cleaning, visualization, and model training workflows.', 60, '2026-01-21 19:07:58', '2026-01-21 19:45:52', 'public/assets/uploads/datascience_python.jpg'),
+(5, 2, 9, 'EMB150', 'Arduino + Sensors Fundamentals', 'beginner', 'No prior hardware knowledge needed.', 'completed', 1800.00, 'Work with ESP/Arduino, sensors, and build mini embedded projects.', 40, '2026-01-21 19:07:58', '2026-01-21 21:58:29', 'public/assets/uploads/arduino_sensors.jpg'),
+(6, 3, 7, 'UX101', 'UI/UX Design Essentials', 'beginner', 'Any design interest helps.', 'available', 5200.00, 'Learn UI hierarchy, spacing, and clean dashboard design.', 35, '2026-01-21 19:07:58', '2026-01-21 19:45:52', 'public/assets/uploads/uiux.jpg'),
+(7, 3, 10, 'LANG110', 'Spoken English Confidence Builder', 'beginner', 'Must be willing to practice speaking.', 'available', 6000.00, 'Improve fluency, pronunciation, and communication in real situations.', 30, '2026-01-21 19:07:58', '2026-01-21 19:45:52', 'public/assets/uploads/spoken_english.jpg'),
+(8, 3, 6, 'WEB210', 'Frontend Layout Mastery (HTML/CSS)', 'intermediate', 'Basic HTML understanding.', 'available', 7600.00, 'Responsive design, flexbox, grid, and clean UI implementation.', 50, '2026-01-21 19:07:58', '2026-01-21 19:45:52', 'public/assets/uploads/frontend_layout.jpeg');
+
+-- OFFERING_TIME_SLOTS (18 rows)
+
+INSERT INTO `offering_time_slots` (`slot_id`, `offering_id`, `day_of_week`, `start_time`, `end_time`, `created_at`) VALUES
+(7, 1, 'mon', '15:00:00', '18:00:00', '2026-01-21 07:36:53'),
+(8, 1, 'tue', '12:00:00', '16:00:00', '2026-01-21 07:36:53'),
+(9, 1, 'wed', '17:00:00', '21:00:00', '2026-01-21 07:36:53'),
+(10, 1, 'thu', '20:00:00', '22:00:00', '2026-01-21 07:36:53'),
+(11, 2, 'mon', '15:00:00', '20:00:00', '2026-01-21 16:28:49'),
+(12, 2, 'wed', '16:00:00', '21:00:00', '2026-01-21 16:28:49'),
+(13, 3, 'sun', '18:00:00', '19:00:00', '2026-01-21 19:07:58'),
+(14, 3, 'wed', '20:00:00', '21:00:00', '2026-01-21 19:07:58'),
+(15, 4, 'mon', '19:00:00', '20:30:00', '2026-01-21 19:07:58'),
+(16, 4, 'thu', '21:00:00', '22:30:00', '2026-01-21 19:07:58'),
+(17, 5, 'sat', '16:00:00', '17:30:00', '2026-01-21 19:07:58'),
+(18, 5, 'tue', '18:30:00', '20:00:00', '2026-01-21 19:07:58'),
+(19, 6, 'sun', '15:00:00', '16:30:00', '2026-01-21 19:07:58'),
+(20, 6, 'thu', '19:30:00', '21:00:00', '2026-01-21 19:07:58'),
+(21, 7, 'mon', '20:00:00', '21:00:00', '2026-01-21 19:07:58'),
+(22, 7, 'fri', '18:00:00', '19:00:00', '2026-01-21 19:07:58'),
+(23, 8, 'tue', '17:00:00', '18:30:00', '2026-01-21 19:07:58'),
+(24, 8, 'sat', '21:00:00', '22:30:00', '2026-01-21 19:07:58');
+
+-- OFFERING_DURATION_OPTIONS (8 rows)
+
+INSERT INTO `offering_duration_options` (`offering_id`, `duration_minutes`, `created_at`) VALUES
+(1, 90, '2026-01-21 07:36:53'),
+(2, 45, '2026-01-21 16:28:49'),
+(3, 30, '2026-01-21 19:07:58'),
+(4, 45, '2026-01-21 19:07:58'),
+(5, 30, '2026-01-21 19:07:58'),
+(6, 45, '2026-01-21 19:07:58'),
+(7, 30, '2026-01-21 19:07:58'),
+(8, 60, '2026-01-21 19:07:58');
+
+-- BOOKING_REQUEST (4 rows)
+
+INSERT INTO `booking_request` (`booking_id`, `offering_id`, `requested_learner_id`, `learner_pref`, `requested_slot_id`, `booked_day_of_week`, `booked_start_time`, `booked_end_time`, `booked_duration_minutes`, `message`, `preferred_time`, `request_type`, `previous_session_id`, `request_status`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 'both', 8, 'tue', '12:00:00', '16:00:00', 90, 'Payment Method: nagad', NULL, 'initial', NULL, 'accepted', '2026-01-21 14:19:40', '2026-01-21 15:06:13'),
+(2, 5, 3, 'video', 17, 'sat', '16:00:00', '17:30:00', 30, 'Payment Method: credit_card (****4321)', NULL, 'initial', NULL, 'accepted', '2026-01-21 21:51:40', '2026-01-21 21:55:30'),
+(3, 3, 3, 'video', 13, 'sun', '18:00:00', '19:00:00', 30, 'Payment Method: credit_card (****4321)', NULL, 'initial', NULL, 'accepted', '2026-01-21 21:52:47', '2026-01-21 21:55:25'),
+(4, 5, 2, 'both', 18, 'tue', '18:30:00', '20:00:00', 30, 'Payment Method: bkash (01734123981)', NULL, 'initial', NULL, 'accepted', '2026-01-21 21:54:19', '2026-01-21 21:55:09');
+
+-- RATING (3 rows)
+
+INSERT INTO `rating` (`rating_id`, `session_id`, `offering_id`, `mentor_id`, `rated_by_learner_id`, `rating`, `review`, `recommend`, `created_at`) VALUES
+(1, 1, 1, 1, 1, 4, 'Satisfactory Experience.', 'yes', '2026-01-21 16:15:45'),
+(2, 4, 5, 2, 3, 5, 'Excellent, Learnt a lot 😊', 'yes', '2026-01-21 22:01:49'),
+(3, 3, 3, 2, 3, 4, 'Really Good, Although experience could\'ve been a bit better.', 'yes', '2026-01-21 22:02:34');
+
+-- SESSIONS (4 rows)
+
+INSERT INTO `sessions` (`session_id`, `booking_id`, `scheduled_start`, `duration_minutes`, `meeting_mode`, `meeting_link`, `session_status`, `created_at`, `updated_at`) VALUES
+(1, 1, '2026-01-27 12:00:00', 90, 'both', 'https://meet.google.com/ouf-ldwu-ofb', 'completed', '2026-01-21 15:06:13', '2026-01-21 16:14:40'),
+(2, 4, '2026-01-27 18:30:00', 30, 'both', 'https://meet.google.com/qky-tayd-bbu', 'completed', '2026-01-21 21:55:09', '2026-01-21 21:58:29'),
+(3, 3, '2026-01-25 18:00:00', 30, 'video', 'https://meet.google.com/fxh-mijv-mzj', 'completed', '2026-01-21 21:55:25', '2026-01-21 21:58:29'),
+(4, 2, '2026-01-24 16:00:00', 30, 'video', 'https://meet.google.com/bpi-wtws-mjm', 'completed', '2026-01-21 21:55:30', '2026-01-21 21:59:29');
+
+-- SKILL CATEGORY (8 rows)
+
+INSERT INTO `skill_categories` (`category_id`, `category_code`, `category_name`, `created_at`) VALUES
+(1, 'CC101', 'Computer Science', '2026-01-20 04:22:46'),
+(2, 'CE102', 'Electrical Engineering', '2026-01-20 04:22:46'),
+(3, 'CC103', 'Chemistry', '2026-01-20 04:22:46'),
+(4, 'CP104', 'Physics', '2026-01-20 04:22:46'),
+(5, 'CM105', 'Mechanical Engineering', '2026-01-20 04:22:46'),
+(6, 'CAT_WEB', 'Web Development', '2026-01-21 19:07:57'),
+(7, 'CAT_DESIGN', 'Graphic Design', '2026-01-21 19:07:57'),
+(8, 'CAT_DS', 'Data Science', '2026-01-21 19:07:57'),
+(9, 'CAT_EMB', 'Embedded Systems', '2026-01-21 19:07:57'),
+(10, 'CAT_LANG', 'Language Learning', '2026-01-21 19:07:57');
+
