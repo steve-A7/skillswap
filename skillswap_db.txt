@@ -1,0 +1,335 @@
+CREATE DATABASE IF NOT EXISTS skillswap_db
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE skillswap_db;
+
+-- 1) USERS TABLE 
+
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(120) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('learner', 'mentor', 'admin') NOT NULL DEFAULT 'learner',
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_users_username (username),
+    UNIQUE KEY uq_users_email (email)
+) ENGINE=InnoDB;
+
+-- 2) LEARNER PROFILES TABLE
+
+CREATE TABLE IF NOT EXISTS learner_profiles (
+    learner_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    sex ENUM('male', 'female', 'other') DEFAULT 'other',
+    age INT DEFAULT NULL,
+    educational_qualification VARCHAR(150) DEFAULT NULL,
+    preferred_way_to_learn ENUM('audio', 'video', 'both') NOT NULL DEFAULT 'both',
+    profile_picture_path VARCHAR(255) DEFAULT NULL,
+    preferred_payment_method ENUM(
+        'paypal', 'credit_card', 'debit_card', 'bkash', 'nagad'
+    ) NOT NULL DEFAULT 'paypal',
+    paypal_email VARCHAR(150) DEFAULT NULL,
+    bkash_number VARCHAR(30) DEFAULT NULL,
+    nagad_number VARCHAR(30) DEFAULT NULL,
+    card_last4 VARCHAR(4) DEFAULT NULL,
+    bio VARCHAR(150) DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_learner_user
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    UNIQUE KEY uq_learner_user (user_id)
+) ENGINE=InnoDB;
+
+-- 3) MENTOR PROFILES TABLE
+
+CREATE TABLE IF NOT EXISTS mentor_profiles (
+    mentor_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    sex ENUM('male', 'female', 'other') DEFAULT 'other',
+    age INT DEFAULT NULL,
+    qualification_experience TEXT DEFAULT NULL,
+    language_proficiency VARCHAR(120) DEFAULT NULL,
+    available_for_price_range ENUM(
+        '500-999',
+        '1000-1999',
+        '2000-2999',
+        '3000-4999',
+        '5000+'
+    ) NOT NULL DEFAULT '1000-1999',
+
+    payment_method ENUM(
+        'paypal', 'credit_card', 'debit_card', 'bkash', 'nagad'
+    ) NOT NULL DEFAULT 'paypal',
+    paypal_email VARCHAR(150) DEFAULT NULL,
+    bkash_number VARCHAR(30) DEFAULT NULL,
+    nagad_number VARCHAR(30) DEFAULT NULL,
+    card_last4 VARCHAR(4) DEFAULT NULL,
+    preferred_mentoring ENUM('audio', 'video', 'both') NOT NULL DEFAULT 'both',
+    profile_picture_path VARCHAR(255) DEFAULT NULL,
+    bio VARCHAR(150) DEFAULT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_mentor_user
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    UNIQUE KEY uq_mentor_user (user_id)
+) ENGINE=InnoDB;
+
+-- 4) SKILL CATEGORIES TABLE
+
+CREATE TABLE IF NOT EXISTS skill_categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_code VARCHAR(50) DEFAULT NULL,
+    category_name VARCHAR(120) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_category_code (category_code),
+    UNIQUE KEY uq_category_name (category_name),
+    INDEX idx_category_name (category_name)
+) ENGINE=InnoDB;
+
+
+-- 5) MENTOR SKILL OFFERINGS
+
+CREATE TABLE IF NOT EXISTS mentor_skill_offerings (
+    offering_id INT AUTO_INCREMENT PRIMARY KEY,
+    mentor_id INT NOT NULL,
+    category_id INT NOT NULL,
+
+    skill_code VARCHAR(50) NOT NULL,
+    skill_title VARCHAR(150) NOT NULL,
+
+    difficulty ENUM('beginner', 'intermediate', 'advanced')
+        NOT NULL DEFAULT 'beginner',
+
+    prerequisites TEXT DEFAULT NULL,
+
+    current_status ENUM('available', 'active', 'booked', 'expired', 'completed')
+        NOT NULL DEFAULT 'available',
+
+    price DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    description TEXT DEFAULT NULL,
+
+    offered_for INT NOT NULL DEFAULT 1,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    offering_picture_path VARCHAR(255) DEFAULT NULL,
+
+    CONSTRAINT fk_offering_mentor
+        FOREIGN KEY (mentor_id) REFERENCES mentor_profiles(mentor_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT fk_offering_category
+        FOREIGN KEY (category_id) REFERENCES skill_categories(category_id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+
+    UNIQUE KEY uq_mentor_skillcode (mentor_id, skill_code),
+
+    INDEX idx_offering_mentor (mentor_id),
+    INDEX idx_offering_category (category_id),
+    INDEX idx_offering_difficulty (difficulty),
+    INDEX idx_offering_status (current_status),
+    INDEX idx_offering_price (price),
+    INDEX idx_offering_skilltitle (skill_title),
+    INDEX idx_offering_offeredfor (offered_for)
+) ENGINE=InnoDB;
+
+
+
+-- 6) OFFERING TIME SLOTS
+
+CREATE TABLE IF NOT EXISTS offering_time_slots (
+    slot_id INT AUTO_INCREMENT PRIMARY KEY,
+    offering_id INT NOT NULL,
+    day_of_week ENUM('sat','sun','mon','tue','wed','thu','fri') DEFAULT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_slot_offering
+        FOREIGN KEY (offering_id) REFERENCES mentor_skill_offerings(offering_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    INDEX idx_slot_offering (offering_id),
+    INDEX idx_slot_day (day_of_week),
+    INDEX idx_slot_start (start_time),
+    INDEX idx_slot_end (end_time)
+) ENGINE=InnoDB;
+
+-- 7) OFFERING DURATION OPTIONS
+
+CREATE TABLE IF NOT EXISTS offering_duration_options (
+    offering_id INT NOT NULL,
+    duration_minutes INT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (offering_id, duration_minutes),
+    CONSTRAINT fk_duration_offering
+        FOREIGN KEY (offering_id) REFERENCES mentor_skill_offerings(offering_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    INDEX idx_duration_minutes (duration_minutes)
+) ENGINE=InnoDB;
+
+-- 8) LEARNER INTERESTS
+
+CREATE TABLE IF NOT EXISTS learner_interests (
+    learner_id INT NOT NULL,
+    category_id INT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (learner_id, category_id),
+
+    CONSTRAINT fk_interest_learner
+        FOREIGN KEY (learner_id) REFERENCES learner_profiles(learner_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT fk_interest_category
+        FOREIGN KEY (category_id) REFERENCES skill_categories(category_id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+
+    INDEX idx_interest_category (category_id)
+) ENGINE=InnoDB;
+
+-- 9) MENTOR CATEGORIES
+
+CREATE TABLE IF NOT EXISTS mentor_categories (
+    mentor_id INT NOT NULL,
+    category_id INT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (mentor_id, category_id),
+
+    CONSTRAINT fk_mcat_mentor
+        FOREIGN KEY (mentor_id) REFERENCES mentor_profiles(mentor_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT fk_mcat_category
+        FOREIGN KEY (category_id) REFERENCES skill_categories(category_id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+
+    INDEX idx_mcat_category (category_id)
+) ENGINE=InnoDB;
+
+-- 10) BOOKING REQUEST TABLE
+
+CREATE TABLE IF NOT EXISTS booking_request (
+    booking_id INT AUTO_INCREMENT PRIMARY KEY,
+    offering_id INT NOT NULL,
+    requested_learner_id INT NOT NULL,
+    learner_pref ENUM('audio', 'video', 'both') NOT NULL DEFAULT 'both',
+    requested_slot_id INT DEFAULT NULL,
+    booked_day_of_week ENUM('sat','sun','mon','tue','wed','thu','fri') DEFAULT NULL,
+    booked_start_time TIME DEFAULT NULL,
+    booked_end_time TIME DEFAULT NULL,
+    booked_duration_minutes INT DEFAULT NULL,
+    message TEXT DEFAULT NULL,
+    preferred_time DATETIME DEFAULT NULL,
+    request_type ENUM('initial', 'followup') NOT NULL DEFAULT 'initial',
+    previous_session_id INT DEFAULT NULL,
+    request_status ENUM('pending', 'accepted', 'rejected', 'cancelled')
+        NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_booking_offering
+        FOREIGN KEY (offering_id) REFERENCES mentor_skill_offerings(offering_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_booking_learner
+        FOREIGN KEY (requested_learner_id) REFERENCES learner_profiles(learner_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_booking_slot
+        FOREIGN KEY (requested_slot_id) REFERENCES offering_time_slots(slot_id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
+    INDEX idx_booking_offering (offering_id),
+    INDEX idx_booking_learner (requested_learner_id),
+    INDEX idx_booking_status (request_status)
+) ENGINE=InnoDB;
+
+
+-- 11) SESSIONS TABLE
+
+CREATE TABLE IF NOT EXISTS sessions (
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id INT NOT NULL,
+    scheduled_start DATETIME NOT NULL,
+    duration_minutes INT NOT NULL,
+    meeting_mode ENUM('audio', 'video', 'both') NOT NULL DEFAULT 'both',
+    meeting_link VARCHAR(255) DEFAULT NULL,
+    session_status ENUM('scheduled', 'completed', 'cancelled')
+        NOT NULL DEFAULT 'scheduled',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_session_booking
+        FOREIGN KEY (booking_id) REFERENCES booking_request(booking_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    UNIQUE KEY uq_session_booking (booking_id),
+    INDEX idx_session_start (scheduled_start),
+    INDEX idx_session_status (session_status)
+) ENGINE=InnoDB;
+
+ALTER TABLE booking_request
+  ADD CONSTRAINT fk_booking_previous_session
+  FOREIGN KEY (previous_session_id) REFERENCES sessions(session_id)
+  ON DELETE SET NULL
+  ON UPDATE CASCADE;
+
+-- 12) RATING TABLE 
+
+CREATE TABLE IF NOT EXISTS rating (
+    rating_id INT AUTO_INCREMENT PRIMARY KEY,
+
+    session_id INT NOT NULL,
+    offering_id INT NOT NULL,
+    mentor_id INT NOT NULL,
+
+    rated_by_learner_id INT NOT NULL,
+
+    rating INT NOT NULL,
+    review TEXT DEFAULT NULL,
+    recommend ENUM('yes', 'no') NOT NULL DEFAULT 'yes',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_rating_session
+        FOREIGN KEY (session_id) REFERENCES sessions(session_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT fk_rating_offering
+        FOREIGN KEY (offering_id) REFERENCES mentor_skill_offerings(offering_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT fk_rating_mentor
+        FOREIGN KEY (mentor_id) REFERENCES mentor_profiles(mentor_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT fk_rating_learner
+        FOREIGN KEY (rated_by_learner_id) REFERENCES learner_profiles(learner_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    UNIQUE KEY uq_rating_session (session_id),
+
+    INDEX idx_rating_session (session_id),
+    INDEX idx_rating_offering (offering_id),
+    INDEX idx_rating_mentor (mentor_id),
+    INDEX idx_rating_learner (rated_by_learner_id),
+    INDEX idx_rating_value (rating)
+) ENGINE=InnoDB;
+
